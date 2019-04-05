@@ -26,6 +26,7 @@ namespace BovrilAuthentication
 				app.UseDeveloperExceptionPage();
 			}
 
+			app.UseBrowserLink();
 			app.UseStaticFiles();
 
 			app.UseRouting(routes =>
