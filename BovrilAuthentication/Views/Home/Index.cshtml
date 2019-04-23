@@ -1,7 +1,33 @@
-﻿@{ 
+﻿@model BovrilAuthentication.Models.HomeModel
+@{
 	ViewData["Title"] = "HomePage";
 }
 
 <div></div>
-<a href="@ViewData["AuthURL"]">Auth</a>
-@ViewData["Chars"]
+@{
+	if (!Model.EveAuthed)
+	{
+		<a href="@ViewData["EveAuthUrl"]">Eve</a><br />
+	}
+	else
+	{
+		<h1>Done</h1><br />
+	}
+}
+
+@{
+	if (!Model.DiscordAuthed)
+	{
+		<a href="@ViewData["DiscordAuthUrl"]">Discord</a><br />
+	}
+	else
+	{
+		<h1>Done</h1><br />
+	}
+}
+@for (int i = 0; i < User.Claims.Count(); i++)
+{
+	<h1>@User.Claims.ElementAt(i)</h1>
+}
+
+@User.Claims.FirstOrDefault(x => x.Type == "access_token")?.Value

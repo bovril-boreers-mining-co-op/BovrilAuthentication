@@ -5,11 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Eve-OpenApi" Version="0.2.1" />
+    <PackageReference Include="AspNet.Security.OAuth.Discord" Version="2.0.1" />
+    <PackageReference Include="AspNet.Security.OAuth.EVEOnline" Version="2.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
   </ItemGroup>
