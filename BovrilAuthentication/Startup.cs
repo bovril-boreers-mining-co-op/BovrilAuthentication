@@ -32,7 +32,6 @@ namespace BovrilAuthentication
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddMvc();
 			string conString = config.GetConnectionString("MySql");
 
 			services.Add(new ServiceDescriptor(
@@ -56,6 +55,8 @@ namespace BovrilAuthentication
 				x.ClientSecret = config["Discord:AppSecret"];
 				x.Scope.Add(config["Discord:Scope"]);
 			});
+
+			services.AddMvc().AddNewtonsoftJson();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,13 +72,13 @@ namespace BovrilAuthentication
 			app.UseBrowserLink();
 			app.UseStaticFiles();
 
-			app.UseRouting();
-			app.UseEndpoints(endpoints =>
+			app.UseRouting(routes =>
 			{
-				endpoints.MapControllerRoute(
+				routes.MapControllerRoute(
 					name: "default",
-					pattern: "{controller=Home}/{action=Index}/{id?}");
-				endpoints.MapRazorPages();
+					template: "{controller=Home}/{action=Index}/{id?}"
+				);
+				routes.MapRazorPages();
 			});
 		}
 	}
