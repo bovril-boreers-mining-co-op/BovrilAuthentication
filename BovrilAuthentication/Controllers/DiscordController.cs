@@ -1,4 +1,6 @@
 ﻿using AspNet.Security.OAuth.Discord;
+using BovrilAuthentication.Extensions;
+using BovrilAuthentication.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +32,12 @@ namespace BovrilAuthentication.Controllers
 
 		public IActionResult Done()
 		{
-			return View();
+			UserModel model = TempData.Get<UserModel>("UserModel");
+			ulong.TryParse(User.FindFirst(ClaimTypes.NameIdentifier).Value, out ulong id);
+			model.SetDiscordID(id);
+			TempData.Put("UserModel", model);
+
+			return RedirectToAction("Done", "Home");
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using BovrilAuthentication.Models;
+﻿using BovrilAuthentication.Extensions;
+using BovrilAuthentication.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,20 @@ namespace BovrilAuthentication.Controllers
 	{
 		public IActionResult Index()
 		{
+			TempData.Put("UserModel", new UserModel("Hei"));
+
 			ViewData["EveAuthUrl"] = "/Eve";
 			ViewData["DiscordAuthUrl"] = "/Discord";
-			//return View("Index", new HomeModel(false, false));
 			return RedirectToAction("Index", "Eve");
+		}
+
+		public IActionResult Done()
+		{
+			MySqlContext database = HttpContext.RequestServices.GetService(typeof(MySqlContext)) as MySqlContext;
+			UserModel user = TempData.Get<UserModel>("UserModel");
+
+			database.AddUser(user.EveID, user.DiscordID);
+			return View(user);
 		}
 	}
 }

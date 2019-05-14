@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.OAuth.Claims;
+using BovrilAuthentication.Models;
+using Microsoft.Extensions.Logging;
 
 namespace BovrilAuthentication
 {
@@ -31,42 +33,28 @@ namespace BovrilAuthentication
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddMvc();
+			string conString = config.GetConnectionString("MySql");
+
+			services.Add(new ServiceDescriptor(
+				typeof(MySqlContext),
+				new MySqlContext(conString)
+			));
 
 			services.AddAuthentication(x =>
 			{
 				x.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 			})
-			.AddCookie(x =>
-			{
-				x.LoginPath = "/login";
-				x.LogoutPath = "/logout";
-			})
+			.AddCookie()
 			.AddEVEOnline(x =>
 			{
 				x.ClientId = config["EveConfig:ClientID"];
 				x.ClientSecret = config["EveConfig:ClientSecret"];
-
-				x.Events = new OAuthEvents
-				{
-					OnCreatingTicket = async c =>
-					{
-						c.Identity.AddClaim(new Claim("EveToken", c.AccessToken));
-					}
-				};
 			})
 			.AddDiscord(x =>
 			{
 				x.ClientId = config["Discord:AppID"];
 				x.ClientSecret = config["Discord:AppSecret"];
 				x.Scope.Add(config["Discord:Scope"]);
-
-				x.Events = new OAuthEvents
-				{
-					OnCreatingTicket = async c =>
-					{
-						c.Identity.AddClaim(new Claim("DiscordToken", c.AccessToken));
-					}
-				};
 			});
 		}
 
@@ -83,10 +71,13 @@ namespace BovrilAuthentication
 			app.UseBrowserLink();
 			app.UseStaticFiles();
 
-			app.UseRouting(routes =>
+			app.UseRouting();
+			app.UseEndpoints(endpoints =>
 			{
-				routes.MapApplication();
-				routes.MapControllerRoute("deafult", "{controller=Home}/{action=Index}/{id?}");
+				endpoints.MapControllerRoute(
+					name: "default",
+					pattern: "{controller=Home}/{action=Index}/{id?}");
+				endpoints.MapRazorPages();
 			});
 		}
 	}

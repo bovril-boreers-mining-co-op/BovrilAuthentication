@@ -1,3 +1,11 @@
 ﻿html, body, .container-table {
 	height: 100%;
 }
+
+body {
+	width: 100%;
+	background-image: url("images/bovrilBackground.jpg");
+	background-attachment: fixed;
+	background-size: cover;
+	background-repeat: no-repeat;
+}
