@@ -48,12 +48,17 @@ namespace BovrilAuthentication
 			{
 				x.ClientId = config["EveConfig:ClientID"];
 				x.ClientSecret = config["EveConfig:ClientSecret"];
+				//x.CallbackPath = new PathString(config["EveConfig:CallbackURL"]);
+
+				x.ReturnUrlParameter = config["EveConfig:CallbackURL"];
 			})
 			.AddDiscord(x =>
 			{
 				x.ClientId = config["Discord:AppID"];
 				x.ClientSecret = config["Discord:AppSecret"];
 				x.Scope.Add(config["Discord:Scope"]);
+				//x.CallbackPath = new PathString(config["EveConfig:CallbackURL"]);
+				x.ReturnUrlParameter = config["Discord:CallbackURL"];
 			});
 
 			services.AddMvc().AddNewtonsoftJson();
@@ -64,19 +69,24 @@ namespace BovrilAuthentication
 		{
 			if (env.IsDevelopment())
 			{
+				app.UseBrowserLink();
 				app.UseDeveloperExceptionPage();
 			}
+			else
+			{
+				app.UseExceptionHandler("/Error");
+			}
 
+			app.UseHsts();
 			app.UseAuthentication();
 
-			app.UseBrowserLink();
 			app.UseStaticFiles();
 
 			app.UseRouting(routes =>
 			{
 				routes.MapControllerRoute(
 					name: "default",
-					template: "{controller=Home}/{action=Index}/{id?}"
+					template: "{controller=Home}/{action=Index}"
 				);
 				routes.MapRazorPages();
 			});

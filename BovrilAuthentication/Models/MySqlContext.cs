@@ -30,5 +30,10 @@ namespace BovrilAuthentication.Models
 				cmd.ExecuteNonQuery();
 			}
 		}
+
+		//public bool UserExists(ulong eveId, ulong discordId)
+		//{
+
+		//}
 	}
 }
