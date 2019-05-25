@@ -16,12 +16,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using BovrilAuthentication.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace BovrilAuthentication
 {
 	public class Startup
 	{
 		IConfiguration config;
+		ILogger log;
 
 		public Startup(IConfiguration config)
 		{
@@ -61,11 +63,13 @@ namespace BovrilAuthentication
 				x.ReturnUrlParameter = config["Discord:CallbackURL"];
 			});
 
+			services.AddLogging();
+
 			services.AddMvc().AddNewtonsoftJson();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+		public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory logger)
 		{
 			if (env.IsDevelopment())
 			{
@@ -75,6 +79,7 @@ namespace BovrilAuthentication
 			else
 			{
 				app.UseExceptionHandler("/Error");
+				logger.AddFile(config["Log:Folder"]);
 			}
 
 			app.UseHsts();

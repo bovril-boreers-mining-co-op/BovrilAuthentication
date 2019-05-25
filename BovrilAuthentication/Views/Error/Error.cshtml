@@ -1,11 +1,16 @@
-﻿@{
+﻿@model string
+@{
 	ViewData["Title"] = "Error";
 }
 
 <div class="h-100 row align-items-center">
 	<div class="col text-center">
-		<div class="h1 text-white">Something happend, please try again.</div>
-		<div class="h4 text-white">If this happens repeatedly please inform your recruiter.</div>
+		<div class="h1 text-white">
+			Something happend, please try again.
+		</div>
+		<div class="h4 text-white">
+			Error id: @Model
+		</div>
 		<a href="/" class="btn btn-primary">
 			Click on me to return
 		</a>

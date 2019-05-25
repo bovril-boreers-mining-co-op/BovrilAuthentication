@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +10,22 @@ namespace BovrilAuthentication.Controllers
 {
 	public class ErrorController : Controller
 	{
+		ILogger<ErrorController> log;
+
+		public ErrorController(ILogger<ErrorController> log)
+		{
+			this.log = log;
+		}
+
 		public IActionResult Index()
 		{
-			return View("Error");
+			Exception ex = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
+
+			Guid guid = Guid.NewGuid();
+			if (ex != null)
+				log.LogError(ex, guid.ToString());
+
+			return View("Error", guid.ToString());
 		}
 	}
 }
