@@ -17,13 +17,13 @@ using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using BovrilAuthentication.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Diagnostics;
+using System.Diagnostics;
 
 namespace BovrilAuthentication
 {
 	public class Startup
 	{
 		IConfiguration config;
-		ILogger log;
 
 		public Startup(IConfiguration config)
 		{
@@ -51,20 +51,16 @@ namespace BovrilAuthentication
 				x.ClientId = config["EveConfig:ClientID"];
 				x.ClientSecret = config["EveConfig:ClientSecret"];
 				//x.CallbackPath = new PathString(config["EveConfig:CallbackURL"]);
-
-				x.ReturnUrlParameter = config["EveConfig:CallbackURL"];
 			})
 			.AddDiscord(x =>
 			{
 				x.ClientId = config["Discord:AppID"];
 				x.ClientSecret = config["Discord:AppSecret"];
 				x.Scope.Add(config["Discord:Scope"]);
-				//x.CallbackPath = new PathString(config["EveConfig:CallbackURL"]);
-				x.ReturnUrlParameter = config["Discord:CallbackURL"];
+				//x.CallbackPath = new PathString(config["Discord:CallbackURL"]);
 			});
 
 			services.AddLogging();
-
 			services.AddMvc().AddNewtonsoftJson();
 		}
 

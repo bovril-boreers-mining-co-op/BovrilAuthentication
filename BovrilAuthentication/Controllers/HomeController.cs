@@ -26,20 +26,54 @@ namespace BovrilAuthentication.Controllers
 			return View();
 		}
 
-		public async Task<IActionResult> Done()
+		public IActionResult AddUser()
 		{
 			MySqlContext database = HttpContext.RequestServices.GetService(typeof(MySqlContext)) as MySqlContext;
+			UserModel user = GetUserMode();
+			TempData.Put("UserModel", user);
+
+			if (database.UserExists(user.EveID, user.DiscordID))
+				return View("Exists");
+
+			if (database.DiscordUserExists(user.DiscordID))
+				return View("ExistsDiscord");
+
+			if (database.EveUserExists(user.EveID))
+				return View("ExistsEve");
+
+			database.AddUser(user.EveID, user.DiscordID);
+			//await SendMessage();
+			return RedirectToAction("Done");
+		}
+
+		public IActionResult ReplaceUser()
+		{
+			MySqlContext database = HttpContext.RequestServices.GetService(typeof(MySqlContext)) as MySqlContext;
+			UserModel user = GetUserMode();
+
+			if (!database.DiscordUserExists(user.DiscordID))
+				return RedirectToAction("AddUser");
+
+			database.ReplaceEve(user.EveID, user.DiscordID);
+			return RedirectToAction("Done");
+		}
+
+		public IActionResult Done()
+		{
+			return View("Done");
+		}
+
+		UserModel GetUserMode()
+		{
 			UserModel user = TempData.Get<UserModel>("UserModel");
 
 			if (user is null)
-				return RedirectToAction("Index");
+				throw new NullReferenceException("User model not initialized");
 
 			if (!user.Set)
 				throw new Exception($"User model credentials not set. {user.DiscordID} {user.EveID}");
 
-			database.AddUser(user.EveID, user.DiscordID);
-			await SendMessage();
-			return View(user);
+			return user;
 		}
 
 		async Task SendMessage()

@@ -37,7 +37,7 @@ namespace BovrilAuthentication.Controllers
 			model.SetDiscordID(id);
 			TempData.Put("UserModel", model);
 
-			return RedirectToAction("Done", "Home");
+			return RedirectToAction("AddUser", "Home");
 		}
 	}
 }

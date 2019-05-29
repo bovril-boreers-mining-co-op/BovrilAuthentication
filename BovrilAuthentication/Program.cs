@@ -23,7 +23,7 @@ namespace BovrilAuthentication
 			Host.CreateDefaultBuilder(args)
 				.ConfigureWebHostDefaults(webBuilder =>
 				{
-					/*webBuilder.UseKestrel(options =>
+					webBuilder.UseKestrel(options =>
 					{
 						// Configure the Url and ports to bind to
 						// This overrides calls to UseUrls and the ASPNETCORE_URLS environment variable, but will be 
@@ -33,7 +33,7 @@ namespace BovrilAuthentication
 						{
 							listenOptions.UseHttps("localhost.pfx", "testpassword");
 						});
-					});*/
+					});
 					webBuilder.UseStartup<Startup>();
 				});
 	}
