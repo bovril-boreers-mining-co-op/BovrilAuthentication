@@ -1,14 +1,10 @@
 ﻿using BovrilAuthentication.Extensions;
 using BovrilAuthentication.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Pipes;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Principal;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BovrilAuthentication.Controllers
@@ -43,14 +39,7 @@ namespace BovrilAuthentication.Controllers
 
 			database.AddUser(user.EveID, user.DiscordID);
 
-			try
-			{
-				await SendMessage();
-			}
-			catch (Exception)
-			{
-				
-			}
+			await SendMessage();
 			return RedirectToAction("Done");
 		}
 
@@ -86,17 +75,17 @@ namespace BovrilAuthentication.Controllers
 
 		async Task SendMessage()
 		{
-			using (var pipeClient = new NamedPipeClientStream(".", "RecruitmentModule", PipeDirection.Out, PipeOptions.Asynchronous))
-			using (var pipeWriter = new StreamWriter(pipeClient))
-			{
-				await pipeClient.ConnectAsync();
+			IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Loopback, 55766);
 
-				if (pipeClient.IsConnected)
-				{
-					await pipeWriter.WriteLineAsync("NameCheck");
-					await pipeWriter.FlushAsync();
-				}
-			}
+			Socket client = new Socket(IPAddress.Loopback.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+
+			await client.ConnectAsync(localEndPoint);
+
+			Memory<byte> data = Encoding.ASCII.GetBytes("Namecheck");
+
+			await client.SendAsync(data, SocketFlags.None);
+			client.Shutdown(SocketShutdown.Both);
+			client.Close();
 		}
 	}
 }
