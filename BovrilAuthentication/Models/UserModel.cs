@@ -1,7 +1,8 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace BovrilAuthentication.Models
@@ -12,6 +13,7 @@ namespace BovrilAuthentication.Models
 
 		public ulong DiscordID { get; set; }
 
+		[JsonIgnore]
 		public bool Set
 		{
 			get
@@ -20,10 +22,8 @@ namespace BovrilAuthentication.Models
 			}
 		}
 
-		[JsonProperty]
-		bool eveSet = false;
-		[JsonProperty]
-		bool discordSet = false;
+		public bool eveSet { get; set; } = false;
+		public bool discordSet { get; set; } = false;
 
 		public void SetEveID(ulong id)
 		{

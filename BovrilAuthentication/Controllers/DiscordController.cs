@@ -1,5 +1,4 @@
-﻿using AspNet.Security.OAuth.Discord;
-using BovrilAuthentication.Extensions;
+﻿using BovrilAuthentication.Extensions;
 using BovrilAuthentication.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;

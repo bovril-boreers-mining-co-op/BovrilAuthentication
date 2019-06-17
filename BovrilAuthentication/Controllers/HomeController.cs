@@ -26,7 +26,7 @@ namespace BovrilAuthentication.Controllers
 			return View();
 		}
 
-		public IActionResult AddUser()
+		public async Task<IActionResult> AddUser()
 		{
 			MySqlContext database = HttpContext.RequestServices.GetService(typeof(MySqlContext)) as MySqlContext;
 			UserModel user = GetUserMode();
@@ -42,7 +42,15 @@ namespace BovrilAuthentication.Controllers
 				return View("ExistsEve");
 
 			database.AddUser(user.EveID, user.DiscordID);
-			//await SendMessage();
+
+			try
+			{
+				await SendMessage();
+			}
+			catch (Exception)
+			{
+				
+			}
 			return RedirectToAction("Done");
 		}
 
@@ -78,7 +86,7 @@ namespace BovrilAuthentication.Controllers
 
 		async Task SendMessage()
 		{
-			using (var pipeClient = new NamedPipeClientStream(".", "RecruitmentModule", PipeDirection.Out, PipeOptions.None, TokenImpersonationLevel.Impersonation))
+			using (var pipeClient = new NamedPipeClientStream(".", "RecruitmentModule", PipeDirection.Out, PipeOptions.Asynchronous))
 			using (var pipeWriter = new StreamWriter(pipeClient))
 			{
 				await pipeClient.ConnectAsync();

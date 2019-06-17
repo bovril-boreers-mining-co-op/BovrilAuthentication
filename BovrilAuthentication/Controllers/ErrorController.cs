@@ -23,7 +23,10 @@ namespace BovrilAuthentication.Controllers
 
 			Guid guid = Guid.NewGuid();
 			if (ex != null)
+			{
+				log.LogWarning(guid.ToString());
 				log.LogError(ex, guid.ToString());
+			}
 
 			return View("Error", guid.ToString());
 		}
